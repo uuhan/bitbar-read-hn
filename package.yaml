@@ -1,0 +1,19 @@
+name: read-hn
+version: '0.1.0.0'
+category: Web
+author: uuhan
+maintainer: xuminhui189@gmail.com
+license: BSD3
+
+extra-source-files:
+  - ChangeLog.md
+
+dependencies:
+  - base
+  - wreq
+  - lens
+  - lens-aeson
+
+executables:
+  read-hn:
+    main: Main.hs
