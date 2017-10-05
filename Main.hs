@@ -15,7 +15,7 @@ import           Foreign.C.Types               (CTime (..))
 import           GHC.Generics                  (Generic)
 import           Network.HTTP.Client           (defaultManagerSettings,
                                                 managerResponseTimeout,
-                                                responseTimeoutMicro)
+                                                responseTimeoutDefault)
 import           Network.Wreq                  as W
 import           System.Directory
 import           System.Environment            (getEnv)
@@ -114,7 +114,7 @@ fetchIds = do
     url = "https://hacker-news.firebaseio.com/v0/topstories.json"
     opts = defaults
             & proxy ?~ httpProxy "localhost" 1111
-            & manager .~ Left defaultManagerSettings { managerResponseTimeout = responseTimeoutMicro (60 * 1000) }
+            -- & manager .~ Left defaultManagerSettings { managerResponseTimeout = responseTimeoutDefault }
 
 fetchStoryById :: Int -> IO Story
 fetchStoryById idx = do
@@ -124,4 +124,4 @@ fetchStoryById idx = do
     url = [qq|https://hacker-news.firebaseio.com/v0/item/{idx}.json|]
     opts = defaults
             & proxy ?~ httpProxy "localhost" 1111
-            & manager .~ Left defaultManagerSettings { managerResponseTimeout = responseTimeoutMicro (60 * 1000) }
+            -- & manager .~ Left defaultManagerSettings { managerResponseTimeout = responseTimeoutDefault }
