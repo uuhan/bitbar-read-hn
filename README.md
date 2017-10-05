@@ -1,4 +1,4 @@
-### BitBar hacker news 插件
+## BitBar hacker news 插件
 
 BitBar自带的插件 **[hacker_news.1m.rb](https://github.com/matryer/bitbar-plugins/blob/master/Web/HackerNews/hacker_news.1m.rb)**, 使用过程中有一些问题：
 
