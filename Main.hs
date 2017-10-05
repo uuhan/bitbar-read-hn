@@ -10,7 +10,7 @@ import           Control.Lens
 import           Control.Monad
 import           Data.Aeson
 import qualified Data.ByteString.Lazy.Char8    as BS
-import           Data.Maybe                    (catMaybes, fromMaybe)
+import           Data.Maybe                    (fromMaybe, mapMaybe)
 import           Foreign.C.Types               (CTime (..))
 import           GHC.Generics                  (Generic)
 import           Network.Wreq                  as W
@@ -52,7 +52,7 @@ main = do
       then putStrLn [qq|🗞  {take titleLimit title}...|]
       else putStrLn [qq|🗞  {title}|]
     putStrLn "---"
-    flip mapM_ stories $ \Story{..} -> do
+    forM_ stories $ \Story{..} -> do
       let comments_url = [qq|'https://news.ycombinator.com/item?id={id}'|]
       putStrLn [qq|{title} | href='{fromMaybe comments_url url}' color=black|]
       putStrLn [qq|Score: {score} Comments: {fromMaybe 0 descendants} | href='{comments_url}' color=#FF6600|]
@@ -68,7 +68,7 @@ fileTimeOut f = do
 currentNewsNo :: Total -> IO Int
 currentNewsNo total = do
     CTime t <- epochTime
-    return $ (fromEnum t) `div` 60 `mod` total
+    return $ fromEnum t `div` 60 `mod` total
 
 refreshStore :: IO ()
 refreshStore = do
@@ -76,12 +76,12 @@ refreshStore = do
     timeout <- fileTimeOut store_file
     stories <- loadData
 
-    when (length stories == 0 || timeout) persist
+    when (null stories || timeout) persist
 
 loadData :: IO [Story]
 loadData = do
     store_file <- storageFile
-    catMaybes . map decode . BS.lines <$> BS.readFile store_file
+    mapMaybe decode . BS.lines <$> BS.readFile store_file
 
 storageFile :: IO FilePath
 storageFile = do
@@ -98,8 +98,8 @@ persist = do
       (openFile file WriteMode >>= \handle -> do
         hSetBuffering handle LineBuffering
         return handle)
-      (hClose)
-      (\handle -> flip mapM_ ids $ \id -> do
+      hClose
+      (\handle -> forM_ ids $ \id ->
         fetchStoryById id >>= pure . encode >>= BS.hPutStrLn handle
       )
 
