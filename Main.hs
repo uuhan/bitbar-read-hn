@@ -36,6 +36,9 @@ instance ToJSON Story
 numberOfNews :: Int
 numberOfNews = 15
 
+titleLimit :: Int
+titleLimit = 50
+
 type Total = Int
 
 main :: IO ()
@@ -46,7 +49,9 @@ main = do
     let total = length stories
     cn <- currentNewsNo total
     let Story{..} = stories !! cn
-    putStrLn [qq|🗞  {title}|]
+    if length title > titleLimit
+      then putStrLn [qq|🗞  {take titleLimit title}...|]
+      else putStrLn [qq|🗞  {title}|]
     putStrLn "---"
     flip mapM_ stories $ \Story{..} -> do
       let comments_url = [qq|'https://news.ycombinator.com/item?id={id}'|]
