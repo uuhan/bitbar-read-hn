@@ -13,6 +13,9 @@ import qualified Data.ByteString.Lazy.Char8    as BS
 import           Data.Maybe                    (fromMaybe, mapMaybe)
 import           Foreign.C.Types               (CTime (..))
 import           GHC.Generics                  (Generic)
+import           Network.HTTP.Client           (defaultManagerSettings,
+                                                managerResponseTimeout,
+                                                responseTimeoutNone)
 import           Network.Wreq                  as W
 import           System.Directory
 import           System.Environment            (getEnv)
@@ -105,16 +108,20 @@ persist = do
 
 fetchIds :: IO [Int]
 fetchIds = do
-    let opts = defaults & proxy ?~ httpProxy "localhost" 1111
     r <- asJSON =<< getWith opts url
     return $ take numberOfNews $ r ^. responseBody
   where
     url = "https://hacker-news.firebaseio.com/v0/topstories.json"
+    opts = defaults
+            & proxy ?~ httpProxy "localhost" 1111
+            & manager .~ Left defaultManagerSettings { managerResponseTimeout = responseTimeoutNone }
 
 fetchStoryById :: Int -> IO Story
 fetchStoryById idx = do
-    let opts = defaults & proxy ?~ httpProxy "localhost" 1111
     r <- asJSON =<< getWith opts url
     return $ r ^. responseBody
   where
     url = [qq|https://hacker-news.firebaseio.com/v0/item/{idx}.json|]
+    opts = defaults
+            & proxy ?~ httpProxy "localhost" 1111
+            & manager .~ Left defaultManagerSettings { managerResponseTimeout = responseTimeoutNone }

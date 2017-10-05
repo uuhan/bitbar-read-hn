@@ -12,6 +12,7 @@ dependencies:
   - filepath
   - unix
   - directory
+  - http-client
   - interpolatedstring-perl6
   - lens
   - lens-aeson
