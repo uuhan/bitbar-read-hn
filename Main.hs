@@ -51,7 +51,7 @@ main = do
     flip mapM_ stories $ \Story{..} -> do
       let comments_url = [qq|'https://news.ycombinator.com/item?id={id}'|]
       putStrLn [qq|{title} | href='{fromMaybe comments_url url}' color=black|]
-      putStrLn [qq|Score: {score} Comments: {descendants} | href='{comments_url}' color=#FF6600|]
+      putStrLn [qq|Score: {score} Comments: {fromMaybe 0 descendants} | href='{comments_url}' color=#FF6600|]
 
 fileTimeOut :: FilePath -> IO Bool
 fileTimeOut f = do
