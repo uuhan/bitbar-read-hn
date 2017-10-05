@@ -43,7 +43,6 @@ type Total = Int
 
 main :: IO ()
 main = do
-    store_file <- storageFile
     refreshStore
     stories <- loadData
     let total = length stories
