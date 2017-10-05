@@ -9,11 +9,16 @@ extra-source-files:
   - ChangeLog.md
 
 dependencies:
+  - aeson
   - base
+  - bytestring
   - filepath
-  - wreq
+  - unix
+  - directory
+  - interpolatedstring-perl6
   - lens
   - lens-aeson
+  - wreq
 
 executables:
   read-hn:
