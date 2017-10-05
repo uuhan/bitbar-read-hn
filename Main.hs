@@ -10,7 +10,7 @@ import           Control.Lens
 import           Control.Monad
 import           Data.Aeson
 import qualified Data.ByteString.Lazy.Char8    as BS
-import           Data.Maybe                    (catMaybes)
+import           Data.Maybe                    (catMaybes, fromMaybe)
 import           Foreign.C.Types               (CTime (..))
 import           GHC.Generics                  (Generic)
 import           Network.Wreq                  as W
@@ -34,7 +34,7 @@ instance FromJSON Story
 instance ToJSON Story
 
 numberOfNews :: Int
-numberOfNews = 12
+numberOfNews = 15
 
 type Total = Int
 
@@ -49,8 +49,9 @@ main = do
     putStrLn [qq|🗞  {title}|]
     putStrLn "---"
     flip mapM_ stories $ \Story{..} -> do
-      putStrLn [qq|{title} | href='{url}' color=black|]
-      putStrLn [qq|Score: {score} Comments: {descendants} | href='https://news.ycombinator.com/item?id={id}' color=#FF6600|]
+      let comments_url = [qq|'https://news.ycombinator.com/item?id={id}'|]
+      putStrLn [qq|{title} | href='{fromMaybe comments_url url}' color=black|]
+      putStrLn [qq|Score: {score} Comments: {descendants} | href='{comments_url}' color=#FF6600|]
 
 fileTimeOut :: FilePath -> IO Bool
 fileTimeOut f = do
@@ -80,7 +81,7 @@ loadData = do
 
 storageFile :: IO FilePath
 storageFile = do
-    file <- pure . (</> "hacker_news_data.txt") =<< getEnv "HOME"
+    file <- pure . (</> "hacker_news.txt") =<< getEnv "HOME"
     exists <- doesFileExist file
     unless exists $ writeFile file ""
     return file
