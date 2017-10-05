@@ -13,9 +13,6 @@ import qualified Data.ByteString.Lazy.Char8    as BS
 import           Data.Maybe                    (fromMaybe, mapMaybe)
 import           Foreign.C.Types               (CTime (..))
 import           GHC.Generics                  (Generic)
-import           Network.HTTP.Client           (defaultManagerSettings,
-                                                managerResponseTimeout,
-                                                responseTimeoutDefault)
 import           Network.Wreq                  as W
 import           System.Directory
 import           System.Environment            (getEnv)
