@@ -48,14 +48,19 @@ main = do
     let total = length stories
     cn <- currentNewsNo total
     let Story{..} = stories !! cn
-    if length title > titleLimit
-      then putStrLn [qq|🗞  {take titleLimit title}...|]
-      else putStrLn [qq|🗞  {title}|]
-    putStrLn "---"
+    printTitle title
     forM_ stories $ \Story{..} -> do
       let comments_url = [qq|'https://news.ycombinator.com/item?id={id}'|]
       putStrLn [qq|{title} | href='{fromMaybe comments_url url}' color=black|]
       putStrLn [qq|Score: {score} Comments: {fromMaybe 0 descendants} | href='{comments_url}' color=#FF6600|]
+
+printTitle :: String -> IO ()
+printTitle title | length title > titleLimit = do
+    putStrLn [qq|🗞  {take titleLimit title}...|]
+    putStrLn "---"
+printTitle title = do
+    putStrLn [qq|🗞  {title}|]
+    putStrLn "---"
 
 fileTimeOut :: FilePath -> IO Bool
 fileTimeOut f = do
