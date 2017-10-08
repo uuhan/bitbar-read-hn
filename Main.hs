@@ -51,9 +51,10 @@ main = do
     let Story{..} = stories !! cn
 
     case r of
-      Left err -> printStories stories >> printError err
-      Right _  -> printTitle title >> printStories stories
+      Left err -> printError err
+      Right _  -> printTitle title
 
+    printStories stories
   where
     printError :: SomeException -> IO ()
     printError err = do
