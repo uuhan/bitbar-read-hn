@@ -43,24 +43,36 @@ type Total = Int
 
 main :: IO ()
 main = do
-    refreshStore
+    r <- try refreshStore :: IO (Either SomeException ())
+
     stories <- loadData
     let total = length stories
     cn <- currentNewsNo total
     let Story{..} = stories !! cn
-    printTitle title
-    forM_ stories $ \Story{..} -> do
-      let comments_url = [qq|'https://news.ycombinator.com/item?id={id}'|]
-      putStrLn [qq|{title} | href='{fromMaybe comments_url url}' color=black|]
-      putStrLn [qq|Score: {score} Comments: {fromMaybe 0 descendants} | href='{comments_url}' color=#FF6600|]
 
-printTitle :: String -> IO ()
-printTitle title | length title > titleLimit = do
-    putStrLn [qq|🗞  {take titleLimit title}...|]
-    putStrLn "---"
-printTitle title = do
-    putStrLn [qq|🗞  {title}|]
-    putStrLn "---"
+    case r of
+      Left err -> printStories stories >> printError err
+      Right _  -> printTitle title >> printStories stories
+
+  where
+    printError :: SomeException -> IO ()
+    printError err = do
+        putStrLn [qq|⚠️  {show err}|]
+        putStrLn "---"
+
+    printTitle :: String -> IO ()
+    printTitle title | length title > titleLimit = do
+        putStrLn [qq|🗞  {take titleLimit title}...|]
+        putStrLn "---"
+    printTitle title = do
+        putStrLn [qq|🗞  {title}|]
+        putStrLn "---"
+
+    printStories :: [Story] -> IO ()
+    printStories = mapM_ $ \Story{..} -> do
+        let comments_url = [qq|'https://news.ycombinator.com/item?id={id}'|]
+        putStrLn [qq|{title} | href='{fromMaybe comments_url url}' color=black|]
+        putStrLn [qq|Score: {score} Comments: {fromMaybe 0 descendants} | href='{comments_url}' color=#FF6600|]
 
 fileTimeOut :: FilePath -> IO Bool
 fileTimeOut f = do
