@@ -52,28 +52,29 @@ main = do
 
     case r of
       Left err -> printError err
-      Right _  -> printTitle title
+      Right _  -> printTitle cn title
 
-    printStories stories
+    printStories cn stories
   where
     printError :: SomeException -> IO ()
     printError err = do
-        putStrLn [qq|⚠️  {show err}|]
+        putStrLn [qq|⚠️   {show err}|]
         putStrLn "---"
 
-    printTitle :: String -> IO ()
-    printTitle title | length title > titleLimit = do
+    printTitle :: Int -> String -> IO ()
+    printTitle cn title | length title > titleLimit = do
         putStrLn [qq|🗞  {take titleLimit title}...|]
         putStrLn "---"
-    printTitle title = do
+    printTitle cn title = do
         putStrLn [qq|🗞  {title}|]
         putStrLn "---"
 
-    printStories :: [Story] -> IO ()
-    printStories = mapM_ $ \Story{..} -> do
-        let comments_url = [qq|'https://news.ycombinator.com/item?id={id}'|]
-        putStrLn [qq|{title} | href='{fromMaybe comments_url url}' color=black|]
-        putStrLn [qq|Score: {score} Comments: {fromMaybe 0 descendants} | href='{comments_url}' color=#FF6600|]
+    printStories :: Int -> [Story] -> IO ()
+    printStories cn = mapM_ (\(no, Story{..}) -> do
+          let comments_url = [qq|'https://news.ycombinator.com/item?id={id}'|]
+          putStrLn [qq|{title} | href='{fromMaybe comments_url url}' color={if cn /= no then "black" else "blue"}|]
+          putStrLn [qq|Score: {score} Comments: {fromMaybe 0 descendants} | href='{comments_url}' color=#FF6600|])
+        . zip [0..]
 
 fileTimeOut :: FilePath -> IO Bool
 fileTimeOut f = do
