@@ -51,14 +51,14 @@ main = do
     let Story{..} = stories !! cn
 
     case r of
-      Left err -> printError err
-      Right _  -> printTitle cn title
+      Left _  -> printError
+      Right _ -> printTitle cn title
 
     printStories cn stories
   where
-    printError :: SomeException -> IO ()
-    printError err = do
-        putStrLn [qq|⚠️   {show err}|]
+    printError :: IO ()
+    printError = do
+        putStrLn [qq|⚠️   Connection Lost|]
         putStrLn "---"
 
     printTitle :: Int -> String -> IO ()
