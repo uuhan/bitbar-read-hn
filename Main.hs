@@ -34,7 +34,7 @@ instance FromJSON Story
 instance ToJSON Story
 
 numberOfNews :: Int
-numberOfNews = 15
+numberOfNews = 20
 
 titleLimit :: Int
 titleLimit = 50
@@ -129,7 +129,7 @@ fetchIds = do
   where
     url = "https://hacker-news.firebaseio.com/v0/topstories.json"
     opts = defaults
-            & proxy ?~ httpProxy "localhost" 1111
+            -- & proxy ?~ httpProxy "localhost" 1111
             -- & manager .~ Left defaultManagerSettings { managerResponseTimeout = responseTimeoutDefault }
 
 fetchStoryById :: Int -> IO Story
@@ -139,5 +139,5 @@ fetchStoryById idx = do
   where
     url = [qq|https://hacker-news.firebaseio.com/v0/item/{idx}.json|]
     opts = defaults
-            & proxy ?~ httpProxy "localhost" 1111
+            -- & proxy ?~ httpProxy "localhost" 1111
             -- & manager .~ Left defaultManagerSettings { managerResponseTimeout = responseTimeoutDefault }
