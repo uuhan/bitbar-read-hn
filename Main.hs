@@ -139,5 +139,5 @@ fetchStoryById idx = do
   where
     url = [qq|https://hacker-news.firebaseio.com/v0/item/{idx}.json|]
     opts = defaults
-            -- & proxy ?~ httpProxy "localhost" 1111
+            & proxy ?~ httpProxy "localhost" 1111
             -- & manager .~ Left defaultManagerSettings { managerResponseTimeout = responseTimeoutDefault }
