@@ -37,7 +37,7 @@ numberOfNews :: Int
 numberOfNews = 20
 
 titleLimit :: Int
-titleLimit = 50
+titleLimit = 35
 
 type Total = Int
 
