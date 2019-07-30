@@ -104,7 +104,7 @@ loadData = do
 
 storageFile :: IO FilePath
 storageFile = do
-    file <- pure . (</> "hacker_news.txt") =<< getEnv "HOME"
+    file <- (</> "hacker_news.txt") <$> getEnv "HOME"
     exists <- doesFileExist file
     unless exists $ writeFile file ""
     return file
@@ -119,7 +119,7 @@ persist = do
         return handle)
       hClose
       (\handle -> forM_ ids $ \id ->
-        fetchStoryById id >>= pure . encode >>= BS.hPutStrLn handle
+       (encode <$> fetchStoryById id) >>= BS.hPutStrLn handle
       )
 
 fetchIds :: IO [Int]
