@@ -72,7 +72,7 @@ main = do
     printStories :: Int -> [Story] -> IO ()
     printStories cn = mapM_ (\(no, Story{..}) -> do
           let comments_url = [qq|'https://news.ycombinator.com/item?id={id}'|]
-          putStrLn [qq|{title} | href='{fromMaybe comments_url url}' color={if cn /= no then "white" else "blue"}|]
+          putStrLn [qq|{title} | href='{fromMaybe comments_url url}' color={if cn /= no then "#FFFFFF" else "blue"}|]
           putStrLn [qq|Score: {score} Comments: {fromMaybe 0 descendants} | href='{comments_url}' color=#FF6600|])
         . zip [0..]
 
